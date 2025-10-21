@@ -6,7 +6,6 @@
 - Docker Compose สำหรับรัน PostgreSQL ในเครื่อง (เปิดใช้ `pgcrypto` อัตโนมัติ)
 - โน้ตบุ๊ก Jupyter สาธิตการเข้ารหัส/ถอดรหัสด้วย SQL โดยตรง
 - โน้ตบุ๊ก Jupyter สาธิตการใช้งานผ่าน ORM (SQLAlchemy) ด้วย `TypeDecorator`
-- ตัวอย่างโค้ดและคอมเมนต์เป็นภาษาไทย
 
 ## โครงสร้างสำคัญของโปรเจกต์
 - `docker-compose.yml` — คอนฟิก Docker Compose สำหรับฐานข้อมูล
