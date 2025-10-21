@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  postgres:
+    build: ./docker
+    container_name: pg_enc_local
+    environment:
+      - POSTGRES_USER=encuser
+      - POSTGRES_PASSWORD=encpass
+      - POSTGRES_DB=encdb
+    ports:
+      - "5432:5432"  # แมปพอร์ตเริ่มต้นของ Postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U encuser -d encdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+
