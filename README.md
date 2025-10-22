@@ -16,6 +16,7 @@
 - `notebooks/postgres_column_encryption_test.ipynb` — เดโมการใช้ `pgp_sym_encrypt`/`pgp_sym_decrypt` ด้วย SQL ดิบ (symmetric)
 - `notebooks/orm_postgres_encryption.ipynb` — เดโมการใช้งานผ่าน ORM โดยใช้ `TypeDecorator` เพื่อเข้ารหัส/ถอดรหัสแบบ symmetric
 - `notebooks/orm_postgres_pubkey_encryption.ipynb` — เดโมการเข้ารหัสแบบกุญแจสาธารณะ (PGP) ร่วมกับ `pgpy` และ ORM
+- `notebooks/hashicorp_vault_transit_demo.ipynb` — เดโมการเก็บกุญแจและใช้การเข้ารหัส/ถอดรหัสผ่าน HashiCorp Vault (transit) ร่วมกับ ORM
 
 ## ข้อกำหนดเบื้องต้น
 - Docker และ Docker Compose
@@ -64,11 +65,18 @@ jupyter notebook
 - `PG_PASSPHRASE` (default: `my-strong-demo-passphrase`) — ใช้สำหรับ symmetric encryption demo
 - `PG_PRIVATE_PASSPHRASE` (default: `demo-private-passphrase`) — รหัสผ่านตัวอย่างสำหรับกุญแจส่วนตัวในโน้ตบุ๊ก public-key (ใช้เพื่อการสาธิตเท่านั้น)
 
+สำหรับโน้ตบุ๊กที่ใช้ HashiCorp Vault ให้ตั้งค่าตัวแปรเพิ่มเติมดังนี้:
+- `VAULT_ADDR` (default: `http://127.0.0.1:8200`) — ที่อยู่ของ Vault
+- `VAULT_TOKEN` (default: `root`) — โทเค็นสำหรับเรียก Vault (ตัวอย่างใช้ dev/root token)
+- `VAULT_TRANSIT_KEY` (default: `customer-data`) — ชื่อ transit key ที่จะใช้สำหรับการเข้ารหัส/ถอดรหัส
+
 ## หมายเหตุด้านความปลอดภัย
 - ข้อมูลตัวอย่างนี้เก็บ passphrase / กุญแจใน ENV/โน้ตบุ๊กเพื่อความง่ายในการทดสอบเท่านั้น — ในสภาพแวดล้อมจริง ควรเก็บกุญแจ/ความลับใน Secret Manager หรือ KMS และควบคุมการเข้าถึงอย่างเข้มงวด
 - การเข้ารหัสแบบ symmetric และ public-key เก็บผลลัพธ์เป็นชนิด `bytea` ในตาราง ดังนั้นคอลัมน์ที่เข้ารหัสจะไม่สามารถใช้ indexing/search แบบปกติได้
 - หากต้องการค้นหา (equality/range) ให้พิจารณาจัดเก็บค่าแฮช (hash) แยกต่างหาก เพื่อใช้เป็นดัชนีในการค้นหา
 - โน้ตบุ๊ก public-key จะสร้างกุญแจแบบชั่วคราวเพื่อการสาธิต — ห้ามใช้กุญแจชุดทดลองนี้ในงานจริง หากใช้ public-key จริง ต้องเก็บกุญแจส่วนตัวอย่างปลอดภัยและมีการสำรอง
+- โน้ตบุ๊ก public-key จะสร้างกุญแจแบบชั่วคราวเพื่อการสาธิต — ห้ามใช้กุญแจชุดทดลองนี้ในงานจริง หากใช้ public-key จริง ต้องเก็บกุญแจส่วนตัวอย่างปลอดภัยและมีการสำรอง
+- โน้ตบุ๊ก Vault ใช้ Vault dev token (`root`) เป็นค่าเริ่มต้นเพื่อความสะดวกในการทดสอบ — ห้ามใช้ token นี้ใน production ให้ตั้งค่า Vault ด้วยวิธีการยืนยันตัวตนที่ปลอดภัย (เช่น AppRole หรือ OIDC) และจำกัดสิทธิ์เฉพาะที่จำเป็น
 
 ## คำสั่งที่เป็นประโยชน์
 - ดูสถานะคอนเทนเนอร์: `docker ps`
